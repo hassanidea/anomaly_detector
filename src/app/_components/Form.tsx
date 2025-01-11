@@ -14,7 +14,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-
+import { useState } from "react";
 import { cn } from "~/lib/utils";
 import { Calendar } from "~/components/ui/calendar";
 import {
@@ -25,6 +25,23 @@ import {
 
 const Form = () => {
   const [date, setDate] = React.useState<Date>();
+  const [vix, setVix] = useState("");
+  const [gtitly, setGtitly] = useState("");
+
+  const handleSend = async () => {
+    try {
+      const response = await fetch("/api/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ date, vix, gtitly }),
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div>
       <Card className="w-[600px]">
@@ -39,7 +56,12 @@ const Form = () => {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="vix">VIX</Label>
-                <Input id="vix" placeholder="VIX ticker value" />
+                <Input
+                  id="vix"
+                  placeholder="VIX ticker value"
+                  value={vix}
+                  onChange={(e) => setVix(e.target.value)}
+                />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="gtitly">
@@ -48,6 +70,8 @@ const Form = () => {
                 <Input
                   id="gtitly"
                   placeholder="Government Treasury Italy 2-Year Bond Yield ticker value"
+                  value={gtitly}
+                  onChange={(e) => setGtitly(e.target.value)}
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -80,7 +104,7 @@ const Form = () => {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline">Cancel</Button>
-          <Button>Predict</Button>
+          <Button onClick={handleSend}>Predict</Button>
         </CardFooter>
       </Card>
     </div>

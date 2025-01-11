@@ -1,5 +1,21 @@
 # Create T3 App
 
+# Creating Anomaly Detector app
+
+## TODO
+
+- [x] Make it deploy (vercel)
+- [x] Scaffold basic UI
+- [x] Tidy up Build process
+- [] Generate prediction
+- [] Proposing a data-driven investment strategy based on the model’s predictions, focusing on minimizing losses or maximizing returns
+- [] Integrate an AI-driven bot to explain the investment strategy to end users, making it accessible and actionable
+- [] Add authentication (w/ clerk)
+- [] Routing page (parallel route)
+- [] Clear button (w/ Server Actions)
+- [] Analytics (posthog)
+- [] Ratelimiting (upstash)
+
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
 ## What's next? How do I make an app with this?
