@@ -22,23 +22,41 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { predictAnomaly } from "../utils/predictAnomaly";
 
 const Form = () => {
   const [date, setDate] = React.useState<Date>();
   const [vix, setVix] = useState("");
   const [gtitly, setGtitly] = useState("");
+  const [result, setResult] = useState<string>("");
 
-  const handleSend = async () => {
+  // const handleSend = async () => {
+  //   try {
+  //     const response = await fetch("/api/predict", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ date, vix, gtitly }),
+  //     });
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const response = await fetch("/api/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ date, vix, gtitly }),
+      const prediction = await predictAnomaly({
+        vix: parseFloat(vix),
+        it2y: parseFloat(gtitly),
+        date: date ? format(date, "yyyy-MM-dd") : "",
       });
+      setResult(
+        prediction.is_anomaly ? "Anomaly Detected" : "No Anomaly Detected",
+      );
     } catch (error) {
-      console.error("Error:", error);
+      setResult("Error making prediction");
     }
   };
 
@@ -58,17 +76,19 @@ const Form = () => {
                 <Label htmlFor="vix">VIX</Label>
                 <Input
                   id="vix"
+                  type="number"
                   placeholder="VIX ticker value"
                   value={vix}
                   onChange={(e) => setVix(e.target.value)}
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="gtitly">
+                <Label htmlFor="it2y">
                   Government Treasury Italy 2-Year Bond Yield
                 </Label>
                 <Input
-                  id="gtitly"
+                  id="it2y"
+                  type="number"
                   placeholder="Government Treasury Italy 2-Year Bond Yield ticker value"
                   value={gtitly}
                   onChange={(e) => setGtitly(e.target.value)}
@@ -104,9 +124,11 @@ const Form = () => {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline">Cancel</Button>
-          <Button onClick={handleSend}>Predict</Button>
+          <Button onClick={handleSubmit}>Predict</Button>
         </CardFooter>
       </Card>
+
+      <p>Result: {result}</p>
     </div>
   );
 };
